@@ -38,6 +38,10 @@ extern "C" {
 /**********************
  *      TYPEDEFS
  **********************/
+ typedef struct
+{
+    int16_t len;
+} am_lv_gauge_ext_needle_t;
 
 /*Data of gauge*/
 typedef struct
@@ -48,6 +52,7 @@ typedef struct
     const lv_color_t * needle_colors; /*Color of the needles (lv_color_t my_colors[needle_num])*/
     uint8_t needle_count;             /*Number of needles*/
     uint8_t label_count;              /*Number of labels on the scale*/
+    am_lv_gauge_ext_needle_t needle_info[3];
 } lv_gauge_ext_t;
 
 /*Styles*/
@@ -87,6 +92,8 @@ void lv_gauge_set_needle_count(lv_obj_t * gauge, uint8_t needle_cnt, const lv_co
  * @param value the new value
  */
 void lv_gauge_set_value(lv_obj_t * gauge, uint8_t needle_id, int16_t value);
+
+void am_lv_gauge_set_needle_len(lv_obj_t * gauge, uint8_t needle_id, int16_t len);
 
 /**
  * Set minimum and the maximum values of a gauge
