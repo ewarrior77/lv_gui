@@ -182,6 +182,17 @@ void lv_gauge_set_value(lv_obj_t * gauge, uint8_t needle_id, int16_t value)
     lv_obj_invalidate(gauge);
 }
 
+void am_lv_gauge_set_needle_len(lv_obj_t * gauge, uint8_t needle_id, int16_t len)
+{
+    lv_gauge_ext_t * ext = lv_obj_get_ext_attr(gauge);
+
+    if(needle_id >= ext->needle_count) return;
+
+    ext->needle_info[needle_id].len = len;
+
+    lv_obj_invalidate(gauge);
+}
+
 /**
  * Set the scale settings of a gauge
  * @param gauge pointer to a gauge object
@@ -415,6 +426,16 @@ static void lv_gauge_draw_needle(lv_obj_t * gauge, const lv_area_t * mask)
     p_mid.y = y_ofs;
     for(i = 0; i < ext->needle_count; i++) {
         /*Calculate the end point of a needle*/
+        r      = lv_obj_get_width(gauge) / 2 - style->body.padding.left;
+
+#ifdef AM_EXAMPLE_WATCHFACE
+        if (i == 0){
+            r -= 100;
+        } else if (i == 1){
+            r -= 50;
+        }
+#endif
+        
         int16_t needle_angle =
             (ext->values[i] - min) * angle * (1 << LV_GAUGE_INTERPOLATE_SHIFT) / (max - min);
 
@@ -442,6 +463,15 @@ static void lv_gauge_draw_needle(lv_obj_t * gauge, const lv_area_t * mask)
             style_needle.line.color = LV_GAUGE_DEF_NEEDLE_COLOR;
         else
             style_needle.line.color = ext->needle_colors[i];
+
+#ifdef AM_EXAMPLE_WATCHFACE
+        if (i == 0)
+            style_needle.line.width = 10;
+        else if (i == 1)
+            style_needle.line.width = 8;
+        else if (i == 2)
+            style_needle.line.width = 5;
+#endif
 
         lv_draw_line(&p_mid, &p_end, mask, &style_needle, opa_scale);
     }
